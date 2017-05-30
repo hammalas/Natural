@@ -8,6 +8,9 @@ import java.util.Collection;
 import org.agileware.natural.common.AbstractAnnotationDescriptor;
 import org.agileware.natural.common.JavaAnnotationMatcher;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.xtext.Assignment;
 import org.eclipse.xtext.RuleCall;
 import org.eclipse.xtext.impl.RuleCallImpl;
@@ -47,5 +50,26 @@ public class CucumberProposalProvider extends AbstractCucumberProposalProvider {
 			}
 			acceptor.accept(createCompletionProposal(proposal, display, null, context));
 		}
+	}
+	
+	@Override
+	public ICompletionProposal createCompletionProposal(String proposal, String displayString, Image image,
+			ContentAssistContext context) {
+		if (isValidProposal(proposal, context.getPrefix(), context)) {
+			return doCreateProposal(proposal, new StyledString(displayString), image, getPriorityHelper()
+					.getDefaultPriority(), context);
+		}
+		return null;
+	}
+	
+	@Override
+	protected boolean isValidProposal(String proposal, String prefix, ContentAssistContext context) {
+		if (proposal == null)
+			return false;
+		if (!proposal.toLowerCase().contains(prefix.toLowerCase()))
+			return false;
+		if (getConflictHelper().existsConflict(proposal, context))
+			return false;
+		return true;
 	}
 }
