@@ -34,7 +34,8 @@ public class CucumberProposalProvider extends AbstractCucumberProposalProvider {
 	public void complete_Step(EObject model, RuleCall ruleCall, ContentAssistContext context,
 			ICompletionProposalAcceptor acceptor) {
 		if (((RuleCallImpl) context.getLastCompleteNode().getGrammarElement()).getRule().getName().equals("EOL")
-				&& context.getPrefix().length() == 0) {
+				) //&& context.getPrefix().length() == 0
+			{
 			for (String entry : descriptor.getNames()) {
 				acceptor.accept(createCompletionProposal(entry + " ", context));
 			}
